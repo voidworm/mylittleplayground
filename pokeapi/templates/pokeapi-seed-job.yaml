@@ -38,11 +38,11 @@ spec:
             - sh
             - -c
             - |
-              until python manage.py migrate --settings=config.docker_compose; do
+              until python manage.py migrate; do
                 echo "waiting for postgres..."
                 sleep 5
               done
-              echo "from data.v2.build import build_all; build_all()" | python manage.py shell --settings=config.docker_compose
+              echo "from data.v2.build import build_all; build_all()" | python manage.py shell
           volumeMounts:
             - name: csv-data
               mountPath: /code/data/v2/csv
