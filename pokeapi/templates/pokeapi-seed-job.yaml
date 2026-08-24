@@ -1,0 +1,51 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}-pokeapi-seed
+spec:
+  backoffLimit: 6
+  template:
+    spec:
+      restartPolicy: OnFailure
+      initContainers:
+        - name: fetch-csv-data
+          image: alpine/git:latest
+          command:
+            - sh
+            - -c
+            - |
+              git clone --depth 1 --branch 2.9.0 --filter=blob:none --sparse https://github.com/PokeAPI/pokeapi.git /tmp/repo
+              cd /tmp/repo
+              git sparse-checkout set data/v2/csv
+              cp -r data/v2/csv/. /csv-data/
+          volumeMounts:
+            - name: csv-data
+              mountPath: /csv-data
+      containers:
+        - name: pokeapi-seed
+          image: {{ .Values.pokeapi.image }}
+          envFrom:
+            - secretRef:
+                name: {{ .Release.Name }}-db
+          env:
+            - name: POSTGRES_HOST
+              value: {{ .Release.Name }}-postgres
+            - name: POSTGRES_PORT
+              value: "5432"
+            - name: REDIS_CONNECTION_STRING
+              value: redis://{{ .Release.Name }}-redis:6379/0
+          command:
+            - sh
+            - -c
+            - |
+              until python manage.py migrate --settings=config.docker_compose; do
+                echo "waiting for postgres..."
+                sleep 5
+              done
+              echo "from data.v2.build import build_all; build_all()" | python manage.py shell --settings=config.docker_compose
+          volumeMounts:
+            - name: csv-data
+              mountPath: /code/data/v2/csv
+      volumes:
+        - name: csv-data
+          emptyDir: {}

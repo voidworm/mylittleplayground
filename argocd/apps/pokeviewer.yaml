@@ -1,0 +1,15 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: pokeviewer
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/voidworm/mylittleplayground.git
+    targetRevision: main
+    path: pokeviewer
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: pokeviewer
+  syncPolicy: {}
