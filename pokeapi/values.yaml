@@ -2,7 +2,6 @@ postgres:
   image: postgres:16-alpine
   db: pokeapi
   user: pokeapi
-  password: pokeapi
   storage: 2Gi
 
 redis:
