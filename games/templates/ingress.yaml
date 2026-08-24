@@ -3,13 +3,11 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ $.Release.Name }}-{{ $name }}
-  annotations:
-    kubernetes.io/ingress.class: traefik
-    traefik.ingress.kubernetes.io/router.middlewares: {{ $.Release.Namespace }}-{{ $.Release.Name }}-{{ $name }}-strip@kubernetescrd
 spec:
   ingressClassName: traefik
   rules:
-    - http:
+    - host: {{ $wl.host }}
+      http:
         paths:
           - path: {{ $wl.path }}
             pathType: Prefix
