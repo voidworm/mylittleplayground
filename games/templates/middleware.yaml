@@ -1,0 +1,13 @@
+{{- range $name, $wl := .Values.workloads }}
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: {{ $.Release.Name }}-{{ $name }}-strip
+  namespace: {{ $.Release.Namespace }}
+spec:is 
+  stripPrefix:
+    prefixes:
+      - {{ $wl.path }}
+---
+{{- end }}

@@ -1,0 +1,12 @@
+workloads:
+  pokemonslider:
+    image: jeffhemmen/2048-pokemon
+    path: /pokemonslider
+    containerPort: 80
+    servicePort: 80
+  tetris:
+    image: uzyexe/tetris
+    path: /tetris 
+    containerPort: 80
+    servicePort: 80
+
