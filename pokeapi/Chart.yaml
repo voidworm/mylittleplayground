@@ -1,6 +1,0 @@
-apiVersion: v2
-name: pokeapi
-description: PokeAPI + Postgres + Redis for local k3d, internal-only (no ingress)
-type: application
-version: 0.1.0
-appVersion: "latest"
